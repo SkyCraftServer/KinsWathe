@@ -32,7 +32,7 @@ public class KinsWatheConfig {
     public int DetectiveAbilityCooldown = GameConstants.getInTicks(1,30) / 20;
 
     @SerialEntry(comment = "Judge: modify price and cooldown of ability.")
-    public int JudgeAbilityPrice = 300;
+    public int JudgeAbilityPrice = 600;
     @SerialEntry
     public int JudgeAbilityGlowing = GameConstants.getInTicks(1,30) / 20;
     @SerialEntry
@@ -55,6 +55,9 @@ public class KinsWatheConfig {
     public int LicensedVillainPlayerLimit = 10;
     @SerialEntry
     public int LicensedVillainRevolverPrice = 300;
+
+    @SerialEntry(comment = "Cook: whether to show pan in shop.")
+    public boolean EnableCookPanInShop = false;
 
     @SerialEntry(comment = "Violator: whether to allow Violator to retain disable/enable state after a server restart.")
     public boolean EnableViolator = false;

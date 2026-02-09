@@ -27,7 +27,7 @@ public class ConfigWorldComponent implements AutoSyncedComponent, ServerTickingC
     public int BellringerAbilityCooldown = GameConstants.getInTicks(2,0) / 20;
     public int DetectiveAbilityPrice = 200;
     public int DetectiveAbilityCooldown = GameConstants.getInTicks(1,30) / 20;
-    public int JudgeAbilityPrice = 300;
+    public int JudgeAbilityPrice = 400;
     public int JudgeAbilityGlowing = GameConstants.getInTicks(1,30) / 20;
     public int JudgeAbilityCooldown = GameConstants.getInTicks(3,0) / 20;
     public int RobotAbilityCooldown = GameConstants.getInTicks(1,30) / 20;
@@ -35,6 +35,7 @@ public class ConfigWorldComponent implements AutoSyncedComponent, ServerTickingC
     public int CleanerAbilityCooldown = GameConstants.getInTicks(2,30) / 20;
     public int DrugmakerGetCoins = 50;
     public int LicensedVillainRevolverPrice = 300;
+    public boolean EnableCookPanInShop = false;
     //关于NoellesRoles修改
     public boolean EnableNoellesRolesModify = true;
     public boolean ConductorInstinctModify = false;
@@ -60,6 +61,7 @@ public class ConfigWorldComponent implements AutoSyncedComponent, ServerTickingC
         CleanerAbilityCooldown = KinsWatheConfig.HANDLER.instance().CleanerAbilityCooldown; tag.putInt("CleanerAbilityCooldown", this.CleanerAbilityCooldown);
         DrugmakerGetCoins = KinsWatheConfig.HANDLER.instance().DrugmakerGetCoins; tag.putInt("DrugmakerGetCoins", this.DrugmakerGetCoins);
         LicensedVillainRevolverPrice = KinsWatheConfig.HANDLER.instance().LicensedVillainRevolverPrice; tag.putInt("LicensedVillainRevolverPrice", this.LicensedVillainRevolverPrice);
+        EnableCookPanInShop = KinsWatheConfig.HANDLER.instance().EnableCookPanInShop; tag.putBoolean("EnableCookPanInShop", this.EnableCookPanInShop);
         //关于NoellesRoles修改
         EnableNoellesRolesModify = KinsWatheConfig.HANDLER.instance().EnableNoellesRolesModify; tag.putBoolean("EnableNoellesRolesModify", this.EnableNoellesRolesModify);
         ConductorInstinctModify = KinsWatheConfig.HANDLER.instance().ConductorInstinctModify; tag.putBoolean("ConductorInstinctModify", this.ConductorInstinctModify);
@@ -84,6 +86,7 @@ public class ConfigWorldComponent implements AutoSyncedComponent, ServerTickingC
         if (tag.contains("CleanerAbilityCooldown"))   this.CleanerAbilityCooldown = tag.getInt("CleanerAbilityCooldown");
         if (tag.contains("DrugmakerGetCoins"))   this.DrugmakerGetCoins = tag.getInt("DrugmakerGetCoins");
         if (tag.contains("LicensedVillainRevolverPrice"))   this.LicensedVillainRevolverPrice = tag.getInt("LicensedVillainRevolverPrice");
+        if (tag.contains("EnableCookPanInShop"))   this.EnableCookPanInShop = tag.getBoolean("EnableCookPanInShop");
         //关于NoellesRoles修改
         if (tag.contains("EnableNoellesRolesModify"))   this.EnableNoellesRolesModify = tag.getBoolean("EnableNoellesRolesModify");
         if (tag.contains("ConductorInstinctModify"))   this.ConductorInstinctModify = tag.getBoolean("ConductorInstinctModify");

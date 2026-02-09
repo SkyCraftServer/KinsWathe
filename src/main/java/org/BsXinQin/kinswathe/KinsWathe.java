@@ -390,10 +390,17 @@ public class KinsWathe implements ModInitializer {
                         }
                     }
                     if (targetPlayer == null) return;
+                    Role targetRole = gameWorld.getRole(targetPlayer);
+                    if (targetRole == null) return;
                     playerShop.balance -= ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityPrice;
                     playerShop.sync();
                     targetPlayer.sendMessage(Text.translatable("tip.kinswathe.judge.notification").withColor(JUDGE.color()), true);
-                    targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityGlowing * 20, 0, false, true, true));
+                        if (targetRole.isKiller() || targetRole.equals(LICENSED_VILLAIN)) {
+                        targetPlayer.damage(targetPlayer.getDamageSources().outOfWorld(), Float.MAX_VALUE);
+                    } else {
+                        targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityGlowing * 20, 0, false, true, true));
+                        player.damage(player.getDamageSources().outOfWorld(), Float.MAX_VALUE);
+                    }
                     ServerWorld targetWorld = targetPlayer.getServerWorld();
                     var lightning = new LightningEntity(net.minecraft.entity.EntityType.LIGHTNING_BOLT, targetWorld);
                     lightning.refreshPositionAfterTeleport(targetPlayer.getX(), targetPlayer.getY(), targetPlayer.getZ());

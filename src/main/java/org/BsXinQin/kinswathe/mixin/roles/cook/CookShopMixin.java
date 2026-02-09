@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import org.BsXinQin.kinswathe.KinsWathe;
 import org.BsXinQin.kinswathe.KinsWatheItems;
+import org.BsXinQin.kinswathe.component.ConfigWorldComponent;
 import org.BsXinQin.kinswathe.component.PlayerPurchaseComponent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,10 +27,12 @@ public abstract class CookShopMixin {
     void tryBuyCookShop(int index, CallbackInfo ci) {
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
         if (gameWorld.isRole(this.player, KinsWathe.COOK)) {
+            boolean enablePan = ConfigWorldComponent.KEY.get(this.player.getWorld()).EnableCookPanInShop;
             Item item;
             int price;
             switch (index) {
                 case 0:
+                    if (!enablePan) return;
                     item = KinsWatheItems.PAN;
                     price = 250;
                     break;
