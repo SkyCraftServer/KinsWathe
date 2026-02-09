@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -61,11 +62,13 @@ public class KinsWathe implements ModInitializer {
     public static Identifier BELLRINGER_ID = Identifier.of(MOD_ID, "bellringer");
     public static Identifier COOK_ID = Identifier.of(MOD_ID, "cook");
     public static Identifier DETECTIVE_ID = Identifier.of(MOD_ID, "detective");
+    public static Identifier JUDGE_ID = Identifier.of(MOD_ID, "judge");
     public static Identifier PHYSICIAN_ID = Identifier.of(MOD_ID, "physician");
     public static Identifier ROBOT_ID = Identifier.of(MOD_ID, "robot");
     //杀手
     public static Identifier CLEANER_ID = Identifier.of(MOD_ID, "cleaner");
     public static Identifier DRUGMAKER_ID = Identifier.of(MOD_ID, "drugmaker");
+    public static Identifier KIDNAPPER_ID = Identifier.of(MOD_ID, "kidnapper");
     //中立
     public static Identifier LICENSED_VILLAIN_ID = Identifier.of(MOD_ID, "licensed_villain");
     //定义词条
@@ -99,6 +102,16 @@ public class KinsWathe implements ModInitializer {
     public static Role DETECTIVE = WatheRoles.registerRole(new Role(
             DETECTIVE_ID,
             0xFFFFCC,
+            true,
+            false,
+            Role.MoodType.REAL,
+            WatheRoles.CIVILIAN.getMaxSprintTime(),
+            false
+    ));
+    //大法官
+    public static Role JUDGE = WatheRoles.registerRole(new Role(
+            JUDGE_ID,
+            0xECECF7,
             true,
             false,
             Role.MoodType.REAL,
@@ -140,6 +153,16 @@ public class KinsWathe implements ModInitializer {
     public static Role DRUGMAKER = WatheRoles.registerRole(new Role(
             DRUGMAKER_ID,
             0x4C0099,
+            false,
+            true,
+            Role.MoodType.FAKE,
+            -1,
+            true
+    ));
+    //绑匪
+    public static Role KIDNAPPER = WatheRoles.registerRole(new Role(
+            KIDNAPPER_ID,
+            0xCC0066,
             false,
             true,
             Role.MoodType.FAKE,
@@ -231,9 +254,6 @@ public class KinsWathe implements ModInitializer {
         registerPackets();
     }
 
-    /// 注册身份id
-    public static Identifier id(String path) {return Identifier.of(MOD_ID, path);}
-
     /// 注册事件
     public void registerEvents() {
         //初始化身份(给予初始物品等)
@@ -289,6 +309,7 @@ public class KinsWathe implements ModInitializer {
                 try {
                     server.getCommandManager().executeWithPrefix(server.getCommandSource(), "effect clear @a");
                     server.getCommandManager().executeWithPrefix(server.getCommandSource(), "kill @e[type=item]");
+                    server.getCommandManager().executeWithPrefix(server.getCommandSource(), "kill @e[type=wathe:player_body]");
                     if (KinsWathe.NOELLESROLES_LOADED) {
                         server.getCommandManager().executeWithPrefix(server.getCommandSource(), "kill @e[type=noellesroles:cube]");
                     }
@@ -313,10 +334,10 @@ public class KinsWathe implements ModInitializer {
             if (GameFunctions.isPlayerAliveAndSurvival(player) && ability.cooldown <= 0) {
                 //敲钟人技能
                 if (gameWorld.isRole(player, BELLRINGER)) {
-                    GameTimeComponent time = GameTimeComponent.KEY.get(player.getWorld());
                     if (playerShop.balance < ConfigWorldComponent.KEY.get(player.getWorld()).BellringerAbilityPrice) return;
                     playerShop.balance -= ConfigWorldComponent.KEY.get(player.getWorld()).BellringerAbilityPrice;
                     playerShop.sync();
+                    GameTimeComponent time = GameTimeComponent.KEY.get(player.getWorld());
                     int currentTime = time.getTime();
                     int newTime = Math.max(0, currentTime - 1200);
                     time.setTime(newTime);
@@ -330,8 +351,8 @@ public class KinsWathe implements ModInitializer {
                 }
                 //侦探技能
                 if (gameWorld.isRole(player, DETECTIVE)) {
-                    ServerPlayerEntity targetPlayer = null;
                     if (playerShop.balance < ConfigWorldComponent.KEY.get(player.getWorld()).DetectiveAbilityPrice) return;
+                    ServerPlayerEntity targetPlayer = null;
                     HitResult targetHitResult = ProjectileUtil.getCollision(player, entity -> entity instanceof ServerPlayerEntity target && target != player && GameFunctions.isPlayerAliveAndSurvival(target), 2.0f);
                     if (targetHitResult instanceof EntityHitResult entityHitResult) {
                         Entity entity = entityHitResult.getEntity();
@@ -354,6 +375,34 @@ public class KinsWathe implements ModInitializer {
                     ability.sync();
                     if (KinsWathe.NOELLESROLES_LOADED) {
                         noellesrolesAbility.cooldown = ConfigWorldComponent.KEY.get(player.getWorld()).DetectiveAbilityCooldown * 20;
+                        noellesrolesAbility.sync();
+                    }
+                }
+                // 大法官技能
+                if (gameWorld.isRole(player, JUDGE)) {
+                    if (playerShop.balance < ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityPrice) return;
+                    ServerPlayerEntity targetPlayer = null;
+                    HitResult targetHitResult = ProjectileUtil.getCollision(player, entity -> entity instanceof ServerPlayerEntity target && target != player && GameFunctions.isPlayerAliveAndSurvival(target), 2.0f);
+                    if (targetHitResult instanceof EntityHitResult entityHitResult) {
+                        Entity entity = entityHitResult.getEntity();
+                        if (entity instanceof ServerPlayerEntity) {
+                            targetPlayer = (ServerPlayerEntity) entity;
+                        }
+                    }
+                    if (targetPlayer == null) return;
+                    playerShop.balance -= ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityPrice;
+                    playerShop.sync();
+                    targetPlayer.sendMessage(Text.translatable("tip.kinswathe.judge.notification").withColor(JUDGE.color()), true);
+                    targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityGlowing * 20, 0, false, true, true));
+                    ServerWorld targetWorld = targetPlayer.getServerWorld();
+                    var lightning = new LightningEntity(net.minecraft.entity.EntityType.LIGHTNING_BOLT, targetWorld);
+                    lightning.refreshPositionAfterTeleport(targetPlayer.getX(), targetPlayer.getY(), targetPlayer.getZ());
+                    lightning.setCosmetic(true);
+                    targetWorld.spawnEntity(lightning);
+                    ability.cooldown = ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityCooldown * 20;
+                    ability.sync();
+                    if (KinsWathe.NOELLESROLES_LOADED) {
+                        noellesrolesAbility.cooldown = ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityCooldown * 20;
                         noellesrolesAbility.sync();
                     }
                 }
@@ -397,7 +446,7 @@ public class KinsWathe implements ModInitializer {
                             if (!RecallerPlayer.placed) {
                                 player.playSoundToPlayer(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
                             } else if (playerShop.balance >= 100) {
-                                world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                                player.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
                                 world.spawnParticles(ParticleTypes.PORTAL, player.getX(), player.getY(), player.getZ(), 75, 0.5, 1.5, 0.5, 0.1);
                             }
                         }

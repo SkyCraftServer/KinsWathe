@@ -1,21 +1,25 @@
 {
   "key.kinswathe.ability": "能力",
   "tip.kinswathe.cooldown": "能力在 %s 秒后可用",
-  "tip.kinswathe.ability_can_use": "按下 %s 键发动能力",
+  "tip.kinswathe.ability.can_use": "按下 %s 键发动能力",
+  "tip.kinswathe.ability.not_enough_money": "需要 %s§f\uE781§r 发动能力",
 
   "announcement.role.kinswathe.bellringer": "敲钟人",
   "announcement.goals.kinswathe.bellringer": "查看时间，并修改时间。",
-  "tip.kinswathe.bellringer.not_enough_money": "需要 %s§f\uE781§r 发动能力",
 
   "announcement.role.kinswathe.cook": "厨师",
   "announcement.goals.kinswathe.cook": "透过墙壁看见吃过东西的玩家！",
 
   "announcement.role.kinswathe.detective": "侦探",
   "announcement.goals.kinswathe.detective": "调查出一切！",
-  "tip.kinswathe.detective.not_enough_money": "需要 %s§f\uE781§r 发动能力",
   "tip.kinswathe.detective.innocent": "%s 是平民",
   "tip.kinswathe.detective.notinnocent": "%s 不是平民",
   "hud.kinswathe.detective.target": "按下 %s 键调查该目标身份",
+
+  "announcement.role.kinswathe.judge": "大法官",
+  "announcement.goals.kinswathe.judge": "公平公正!",
+  "tip.kinswathe.judge.notification": "你正在接受审判",
+  "hud.kinswathe.judge.target": "按下 %s 键审判该目标",
 
   "announcement.role.kinswathe.physician": "医师",
   "announcement.goals.kinswathe.physician": "透过墙壁看见中毒的玩家，然后治疗他们",
@@ -26,12 +30,17 @@
 
   "announcement.role.kinswathe.cleaner": "清道夫",
   "announcement.goals.kinswathe.cleaner": "扫除一切障碍！",
-  "tip.kinswathe.cleaner.not_enough_money": "需要 %s§f\uE781§r 发动能力",
 
   "announcement.role.kinswathe.drugmaker": "制毒师",
   "announcement.goals.kinswathe.drugmaker": "用毒药征服所有人！",
   "tip.kinswathe.drugmaker.posion_failed": "它似乎无法被中毒...",
   "tip.kinswathe.drugmaker.posioned": "有人中毒了",
+
+  "announcement.role.kinswathe.kidnapper": "绑匪",
+  "announcement.goals.kinswathe.kidnapper": "将乘客绑架到隐蔽的角落。",
+  "tip.kinswathe.kidnapper.warning": "你正在被绑匪劫持！",
+  "tip.kinswathe.kidnapper.timeleft": "劫持剩余时间：%s 秒",
+  "tip.kinswathe.kidnapper.release": "劫持已结束",
 
   "announcement.role.kinswathe.licensed_villain": "执照恶棍",
   "announcement.goals.kinswathe.licensed_villain": "你或许还尚存有一丝良知...",
@@ -46,11 +55,14 @@
   "item.kinswathe.blowgun": "吹矢",
   "item.kinswathe.blowgun.tooltip": "瞄准、右键点击并射击\n被射中的目标将会中毒\n冷却 90 秒",
 
+  "item.kinswathe.knockout_drug": "迷药",
+  "item.kinswathe.knockout_drug.tooltip": "用于玩家，可迷晕其 20 秒\n被作用的玩家将会一直跟随你\n按下潜行键可以释放玩家\n一次性物品，冷却 60 秒",
+
   "item.kinswathe.medical_kit": "医疗箱",
   "item.kinswathe.medical_kit.tooltip": "用于玩家，可移除其中毒效果\n冷却 1 分钟",
 
   "item.kinswathe.pan": "平底锅",
-  "item.kinswathe.pan.tooltip": "攻击可击退玩家\n冷却 15 秒",
+  "item.kinswathe.pan.tooltip": "右键蓄力一秒，靠近目标即可击晕 5 秒\n冷却 45 秒",
 
   "item.kinswathe.poison_injector": "毒液注射器",
   "item.kinswathe.poison_injector.tooltip": "用于玩家，使其中毒\n如果目标已经中毒，则直接致死\n冷却 90 秒",
