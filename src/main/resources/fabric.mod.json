@@ -28,11 +28,16 @@
   },
   "custom": {
     "cardinal-components": [
+      "kinswathe:safe",
       "kinswathe:ability",
       "kinswathe:config",
       "kinswathe:winner",
       "kinswathe:cook",
-      "kinswathe:kidnapper"
+      "kinswathe:dreamer",
+      "kinswathe:dreamer_killer",
+      "kinswathe:hunter",
+      "kinswathe:kidnapper",
+      "kinswathe:physician"
     ]
   },
   "mixins": [

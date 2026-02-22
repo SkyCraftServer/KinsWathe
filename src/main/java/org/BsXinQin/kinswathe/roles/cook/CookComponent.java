@@ -1,6 +1,6 @@
 package org.BsXinQin.kinswathe.roles.cook;
 
-import dev.doctor4t.wathe.game.GameConstants;
+import dev.doctor4t.wathe.cca.GameWorldComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
@@ -15,28 +15,30 @@ import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 public class CookComponent implements AutoSyncedComponent, ServerTickingComponent {
 
     public static final ComponentKey<CookComponent> KEY = ComponentRegistry.getOrCreate(Identifier.of(KinsWathe.MOD_ID, "cook"), CookComponent.class);
-    private final PlayerEntity player;
+
+    @NotNull private final PlayerEntity player;
     public int eatTicks = 0;
     public int panStunTicks = 0;
 
     public CookComponent(@NotNull PlayerEntity player) {this.player = player;}
-    public void sync() {KEY.sync(this.player);}
 
     @Override
     public void serverTick() {
         if (this.eatTicks > 0) {
-            --this.eatTicks;
+            this.notInGameReset();
+            -- this.eatTicks;
             this.sync();
         }
         if (this.panStunTicks > 0) {
-            --this.panStunTicks;
+            -- this.panStunTicks;
             this.sync();
         }
     }
 
-    public void startEating() {
-        setEatTicks(GameConstants.getInTicks(0, 40));
-        this.sync();
+    public void notInGameReset() {
+        if (GameWorldComponent.KEY.get(this.player.getWorld()).getRole(this.player) == null) {
+            this.reset();
+        }
     }
 
     public void setEatTicks(int ticks) {
@@ -47,6 +49,16 @@ public class CookComponent implements AutoSyncedComponent, ServerTickingComponen
     public void setPanStun(int ticks) {
         this.panStunTicks = ticks;
         this.sync();
+    }
+
+    public void reset() {
+        this.eatTicks = 0;
+        this.panStunTicks = 0;
+        this.sync();
+    }
+
+    public void sync() {
+        KEY.sync(this.player);
     }
 
     @Override
