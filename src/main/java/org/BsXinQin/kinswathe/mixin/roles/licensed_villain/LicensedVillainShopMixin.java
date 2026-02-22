@@ -31,7 +31,12 @@ public abstract class LicensedVillainShopMixin {
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(player.getWorld());
         if (gameWorld.isRole(player, KinsWathe.LICENSED_VILLAIN)) {
             if (index == 0) {
-                if (balance >= ConfigWorldComponent.KEY.get(player.getWorld()).LicensedVillainRevolverPrice && !this.player.getItemCooldownManager().isCoolingDown(WatheItems.REVOLVER)) {
+            boolean hasRevolver = player.getMainHandStack().isOf(WatheItems.REVOLVER)
+                || player.getOffHandStack().isOf(WatheItems.REVOLVER)
+                || player.getInventory().contains(WatheItems.REVOLVER.getDefaultStack());
+            if (!hasRevolver
+                && balance >= ConfigWorldComponent.KEY.get(player.getWorld()).LicensedVillainRevolverPrice
+                && !this.player.getItemCooldownManager().isCoolingDown(WatheItems.REVOLVER)) {
                     this.balance -= ConfigWorldComponent.KEY.get(player.getWorld()).LicensedVillainRevolverPrice;
                     sync();
                     player.giveItemStack(WatheItems.REVOLVER.getDefaultStack());

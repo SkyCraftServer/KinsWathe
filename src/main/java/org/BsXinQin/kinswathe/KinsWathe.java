@@ -395,7 +395,8 @@ public class KinsWathe implements ModInitializer {
                     playerShop.balance -= ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityPrice;
                     playerShop.sync();
                     targetPlayer.sendMessage(Text.translatable("tip.kinswathe.judge.notification").withColor(JUDGE.color()), true);
-                        if (targetRole.isKiller() || targetRole.equals(LICENSED_VILLAIN)) {
+                        boolean isKillerTarget = !targetRole.isInnocent() && !NEUTRAL_ROLES.contains(targetRole);
+                        if (isKillerTarget || targetRole.equals(LICENSED_VILLAIN)) {
                         targetPlayer.damage(targetPlayer.getDamageSources().outOfWorld(), Float.MAX_VALUE);
                     } else {
                         targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, ConfigWorldComponent.KEY.get(player.getWorld()).JudgeAbilityGlowing * 20, 0, false, true, true));
