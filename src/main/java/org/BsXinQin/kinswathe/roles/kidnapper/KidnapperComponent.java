@@ -63,6 +63,11 @@ public class KidnapperComponent implements AutoSyncedComponent, ServerTickingCom
             this.reset();
             return;
         }
+        if (this.player.distanceTo(controller) > 5.0f) {
+            this.releaseControlTip();
+            this.reset();
+            return;
+        }
         if (GameFunctions.isPlayerSpectatingOrCreative(controller) || GameFunctions.isPlayerSpectatingOrCreative(this.player) || controller.isSneaking()) {
             this.releaseControlTip();
             this.reset();
@@ -73,7 +78,9 @@ public class KidnapperComponent implements AutoSyncedComponent, ServerTickingCom
         if (this.controllerUUID == null || this.player.getWorld().isClient) return;
         PlayerEntity controller = this.player.getWorld().getPlayerByUuid(this.controllerUUID);
         if (controller != null) {
-            this.player.teleport((ServerWorld) this.player.getWorld(), controller.getX(), controller.getY(), controller.getZ(), Set.of(), controller.getYaw(), controller.getPitch());
+            if (this.player.getWorld() instanceof @NotNull ServerWorld serverWorld) {
+                this.player.teleport(serverWorld, controller.getX(), controller.getY(), controller.getZ(), Set.of(), controller.getYaw(), controller.getPitch());
+            }
         }
     }
 

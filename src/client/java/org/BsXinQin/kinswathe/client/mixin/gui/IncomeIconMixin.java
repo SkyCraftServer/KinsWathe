@@ -10,6 +10,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import org.BsXinQin.kinswathe.KinsWatheRoles;
+import org.BsXinQin.kinswathe.component.ConfigWorldComponent;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,7 +35,9 @@ public abstract class IncomeIconMixin {
                 GameWorldComponent.KEY.get(player.getWorld()).isRole(player, KinsWatheRoles.DREAMER) ||
                 GameWorldComponent.KEY.get(player.getWorld()).isRole(player, KinsWatheRoles.JUDGE) ||
                 GameWorldComponent.KEY.get(player.getWorld()).isRole(player, KinsWatheRoles.LICENSED_VILLAIN) ||
-                GameWorldComponent.KEY.get(player.getWorld()).isRole(player, KinsWatheRoles.PHYSICIAN)) {
+                GameWorldComponent.KEY.get(player.getWorld()).isRole(player, KinsWatheRoles.PHYSICIAN) ||
+                GameWorldComponent.KEY.get(player.getWorld()).isRole(player, KinsWatheRoles.TECHNICIAN) ||
+               (ConfigWorldComponent.KEY.get(player.getWorld()).HackerHasShop && GameWorldComponent.KEY.get(player.getWorld()).isRole(player, KinsWatheRoles.HACKER))) {
                 int balance = PlayerShopComponent.KEY.get(player).balance;
                 if (view.getTarget() != (float) balance) {
                     offsetDelta = (float) balance > view.getTarget() ? 0.6F : -0.6F;

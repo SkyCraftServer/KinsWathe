@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
 import net.minecraft.entity.player.PlayerEntity;
+import org.BsXinQin.kinswathe.KinsWatheConfig;
 import org.BsXinQin.kinswathe.KinsWatheRoles;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +19,8 @@ public abstract class PassiveIncomeMixin {
     public boolean setPassiveIncome(@NotNull GameWorldComponent gameWorld, @NotNull PlayerEntity player, @NotNull Operation<Boolean> original) {
         if (gameWorld.isRole(player, KinsWatheRoles.COOK) ||
             gameWorld.isRole(player, KinsWatheRoles.DREAMER) ||
-            gameWorld.isRole(player, KinsWatheRoles.JUDGE)) return true;
+            gameWorld.isRole(player, KinsWatheRoles.JUDGE) ||
+           (KinsWatheConfig.HANDLER.instance().HackerHasShop && gameWorld.isRole(player, KinsWatheRoles.HACKER))) return true;
         return original.call(gameWorld,player);
     }
 }

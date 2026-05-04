@@ -22,7 +22,6 @@ public abstract class LicensedVillainInstinctMixin {
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
         if (gameWorld.isRole(MinecraftClient.getInstance().player, KinsWatheRoles.LICENSED_VILLAIN) && WatheClient.instinctKeybind.isPressed()) {
             cir.setReturnValue(true);
-            cir.cancel();
         }
     }
 

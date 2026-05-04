@@ -20,7 +20,8 @@ public abstract class ConductorInstinctMixin {
 
     @Inject(method = "getInstinctHighlight", at = @At("HEAD"), cancellable = true)
     private static void getInstinctHighlight(@NotNull Entity target, @NotNull CallbackInfoReturnable<Integer> cir) {
-        if (!FabricLoader.getInstance().isModLoaded("noellesroles") || MinecraftClient.getInstance().player == null) return;
+        if (!FabricLoader.getInstance().isModLoaded("noellesroles")) return;
+        if (MinecraftClient.getInstance().player == null) return;
         if (!ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).EnableNoellesRolesModify || !ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).ConductorInstinctModify) return;
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
         if (target instanceof @NotNull ItemEntity) {

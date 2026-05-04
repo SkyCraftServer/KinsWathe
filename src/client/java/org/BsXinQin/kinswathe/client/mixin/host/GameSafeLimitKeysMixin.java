@@ -17,23 +17,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class GameSafeLimitKeysMixin {
 
     @Unique
-    private void limitGameSafeKeys(@NotNull CallbackInfoReturnable<Boolean> cir) {
+    private void safeLockKeys(@NotNull CallbackInfoReturnable<Boolean> cir) {
         if (MinecraftClient.getInstance().player == null) return;
-        if (!ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).EnableGameSafeTime) return;
+        if (!ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).EnableStartSafeTime) return;
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
-        GameSafeComponent playerSafe = GameSafeComponent.KEY.get(MinecraftClient.getInstance().player);
+        GameSafeComponent gameSafe = GameSafeComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
         if (WatheClient.isPlayerAliveAndInSurvival()) {
             KeyBinding key = (KeyBinding) (Object) this;
-            boolean inventoryKey = key.equals(MinecraftClient.getInstance().options.inventoryKey);
-            if (gameWorld.isRunning() && playerSafe.isGameSafe && inventoryKey) {
+            boolean attackKey = key.equals(MinecraftClient.getInstance().options.attackKey);
+            if (gameWorld.isRunning() && gameSafe.isSafe() && attackKey) {
                 cir.setReturnValue(false);
             }
         }
     }
 
     @Inject(method = "wasPressed", at = @At("RETURN"), cancellable = true)
-    private void wasPressed(@NotNull CallbackInfoReturnable<Boolean> cir) {limitGameSafeKeys(cir);}
+    private void wasPressed(@NotNull CallbackInfoReturnable<Boolean> cir) {safeLockKeys(cir);}
 
     @Inject(method = "isPressed", at = @At("RETURN"), cancellable = true)
-    private void isPressed(@NotNull CallbackInfoReturnable<Boolean> cir) {limitGameSafeKeys(cir);}
+    private void isPressed(@NotNull CallbackInfoReturnable<Boolean> cir) {safeLockKeys(cir);}
 }

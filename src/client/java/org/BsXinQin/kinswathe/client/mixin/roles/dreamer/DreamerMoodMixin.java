@@ -43,7 +43,7 @@ public class DreamerMoodMixin {
             context.getMatrices().push();
             context.getMatrices().translate(0.0F, 10.0F * moodOffset, 0.0F);
             MatrixStack var10000 = context.getMatrices();
-            var10000.translate(26.0F, (float)(8 + 9), 0.0F);
+            var10000.translate(26.0F, (float) (8 + 9), 0.0F);
             context.getMatrices().scale((moodTextWidth - 8.0F) * moodRender, 1.0F, 1.0F);
             float rainbowTime = (System.currentTimeMillis() % 6000) / 6000.0F;
             int rainbowColor = MathHelper.hsvToRgb(rainbowTime, 1.0F, 1.0F);

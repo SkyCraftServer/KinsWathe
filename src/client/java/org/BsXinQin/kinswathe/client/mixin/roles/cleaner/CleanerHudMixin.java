@@ -33,16 +33,14 @@ public abstract class CleanerHudMixin {
         PlayerShopComponent playerShop = PlayerShopComponent.KEY.get(MinecraftClient.getInstance().player);
         if (gameWorld.isRole(MinecraftClient.getInstance().player, KinsWatheRoles.CLEANER) && WatheClient.isPlayerAliveAndInSurvival()) {
             int drawY = context.getScaledWindowHeight();
-
-            Text line = Text.translatable("tip.kinswathe.ability.can_use", KinsWatheInitializeClient.abilityBind.getBoundKeyLocalizedText());
-
+            Text line;
             if (playerShop.balance < ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).CleanerAbilityPrice) {
                 line = Text.translatable("tip.kinswathe.ability.not_enough_money", ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).CleanerAbilityPrice);
-            }
-            if (ability.cooldown > 0) {
+            } else if (ability.cooldown > 0) {
                 line = Text.translatable("tip.kinswathe.cooldown", ability.cooldown / 20);
+            } else {
+                line = Text.translatable("tip.kinswathe.ability.can_use", KinsWatheInitializeClient.abilityBind.getBoundKeyLocalizedText());
             }
-
             drawY -= getTextRenderer().getWrappedLinesHeight(line, 999999);
             context.drawTextWithShadow(getTextRenderer(), line, context.getScaledWindowWidth() - getTextRenderer().getWidth(line), drawY, KinsWatheRoles.CLEANER.color());
         }

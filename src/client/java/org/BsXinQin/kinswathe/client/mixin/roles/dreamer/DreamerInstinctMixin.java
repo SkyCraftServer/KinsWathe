@@ -23,7 +23,6 @@ public abstract class DreamerInstinctMixin {
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
         if (gameWorld.isRole(MinecraftClient.getInstance().player, KinsWatheRoles.DREAMER) && WatheClient.instinctKeybind.isPressed()) {
             cir.setReturnValue(true);
-            cir.cancel();
         }
     }
 

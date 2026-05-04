@@ -27,13 +27,13 @@ public abstract class DreamerAddCountsMixin {
 
     @Inject(method = "setPoisonTicks", at = @At("HEAD"))
     private void addDreamerCounts(int ticks, @NotNull UUID poisoner, CallbackInfo ci) {
-        if (ticks <= 0 || poisoner == null || GameFunctions.isPlayerSpectatingOrCreative(this.player)) return;
+        if (ticks <= 0 || GameFunctions.isPlayerSpectatingOrCreative(this.player)) return;
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
-        if (!(this.player instanceof ServerPlayerEntity)) return;
-        if (!gameWorld.isInnocent(this.player) || gameWorld.isRole(this.player, KinsWatheRoles.ROBOT)) return;
-        if (poisoner.equals(DELUSION_MARKER)) {
+        if (!(this.player instanceof @NotNull ServerPlayerEntity)) return;
+        if (gameWorld.canUseKillerFeatures(this.player) || gameWorld.isRole(this.player, KinsWatheRoles.ROBOT) || gameWorld.isRole(this.player, KinsWatheRoles.DREAMER)) return;
+        if (poisoner != null && poisoner.equals(DELUSION_MARKER)) {
             for (ServerPlayerEntity serverPlayer : this.player.getServer().getPlayerManager().getPlayerList()) {
-                if (serverPlayer == null) return;
+                if (serverPlayer == null) continue;
                 if (gameWorld.isRole(serverPlayer, KinsWatheRoles.DREAMER) && GameFunctions.isPlayerAliveAndSurvival(serverPlayer)) {
                     DreamerKillerComponent playerDreamer = DreamerKillerComponent.KEY.get(serverPlayer);
                     serverPlayer.sendMessage(Text.translatable("tip.kinswathe.dreamer.fake_poisoned").withColor(KinsWatheRoles.DREAMER.color()), true);

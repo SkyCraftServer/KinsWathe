@@ -24,7 +24,7 @@ public class BellringerAbility {
             playerShop.balance -= KinsWatheConfig.HANDLER.instance().BellringerAbilityPrice;
             playerShop.sync();
             time.setTime(Math.max(0, time.getTime() - 1200));
-            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_BELL_USE, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            player.playSoundToPlayer(SoundEvents.BLOCK_BELL_USE, SoundCategory.PLAYERS, 1.0f, 1.0f);
             ability.setAbilityCooldown(KinsWatheConfig.HANDLER.instance().BellringerAbilityCooldown);
         }
     }

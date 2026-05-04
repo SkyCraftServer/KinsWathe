@@ -2,6 +2,8 @@ package org.BsXinQin.kinswathe;
 
 import dev.doctor4t.wathe.game.GameConstants;
 import dev.doctor4t.wathe.game.GameFunctions;
+import dev.doctor4t.wathe.index.WatheItems;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
@@ -19,12 +21,17 @@ public class KinsWatheItems {
             new BlowgunItem(new Item.Settings().maxCount(1)),
             "blowgun"
     );
+    //捕捉装置
+    public static final Item CAPTURE_DEVICE = registerItem(
+            new CaptureDeviceItem(new Item.Settings().maxCount(1)),
+            "capture_device"
+    );
     //梦之印记
     public static final Item DREAM_IMPRINT = registerItem(
-            new DreamImprintItem(new Item.Settings().maxCount(1)),
+            new DreamImprintItem(new Item.Settings().maxCount(4)),
             "dream_imprint"
     );
-    //吹矢
+    //猎刀
     public static final Item HUNTING_KNIFE = registerItem(
             new HuntingKnifeItem(new Item.Settings().maxCount(1)),
             "hunting_knife"
@@ -44,7 +51,12 @@ public class KinsWatheItems {
             new PanItem(new Item.Settings().maxCount(1)),
             "pan"
     );
-    //毒液注射器
+    //手机
+    public static final Item PHONE = registerItem(
+            new PhoneItem(new Item.Settings().maxCount(1)),
+            "phone"
+    );
+    //药丸
     public static final Item PILL = registerItem(
             new PillItem(new Item.Settings().maxCount(1)),
             "pill"
@@ -59,37 +71,92 @@ public class KinsWatheItems {
             new SulfuricAcidBarrelItem(new Item.Settings().maxCount(1)),
             "sulfuric_acid_barrel"
     );
+    //扳手
+    public static final Item WRENCH = registerItem(
+            new WrenchItem(new Item.Settings().maxCount(1)),
+            "wrench"
+    );
+
+    /// 新增图标
+    //刷新技能冷却图标
+    public static final Item ICON_ABILITY_COOLDOWN_REFRESH = registerItem(
+            new Item(new Item.Settings().maxCount(1)),
+            "icon_ability_cooldown_refresh"
+    );
+    //刷新药水状态图标
+    public static final Item ICON_POTION_EFFECT_REFRESH = registerItem(
+            new Item(new Item.Settings().maxCount(1)),
+            "icon_potion_effect_refresh"
+    );
+    //电力恢复图标
+    public static final Item ICON_POWER_RESTORATION = registerItem(
+            new Item(new Item.Settings().maxCount(1)),
+            "icon_power_restoration"
+    );
+    //刷新武器冷却图标
+    public static final Item ICON_WEAPON_COOLDOWN_REFRESH = registerItem(
+            new Item(new Item.Settings().maxCount(1)),
+            "icon_weapon_cooldown_refresh"
+    );
 
     /// 注册方法
-    public static Item registerItem(Item item, String id) {
+    public static Item registerItem(@NotNull Item item, @NotNull String id) {
         Identifier itemID = Identifier.of(KinsWathe.MOD_ID, id);
         return Registry.register(Registries.ITEM, itemID, item);
     }
 
     /// 设置物品使用
     public static void setItemAfterUsing(@NotNull PlayerEntity player, @NotNull Item item, Hand hand) {
+        Integer cooldown = GameConstants.ITEM_COOLDOWNS.get(item);
         if (GameFunctions.isPlayerAliveAndSurvival(player)) {
-            player.getItemCooldownManager().set(item, GameConstants.ITEM_COOLDOWNS.get(item));
+            if (cooldown != null) player.getItemCooldownManager().set(item, cooldown);
             if (hand != null) player.getStackInHand(hand).decrement(1);
         }
     }
 
     /// 添加物品冷却
     public static void addItemCooldowns() {
+        //物品冷却
         GameConstants.ITEM_COOLDOWNS.put(BLOWGUN, GameConstants.getInTicks(1,0));
-        GameConstants.ITEM_COOLDOWNS.put(DREAM_IMPRINT, GameConstants.getInTicks(0,0));
+        GameConstants.ITEM_COOLDOWNS.put(CAPTURE_DEVICE, GameConstants.getInTicks(1,0));
         GameConstants.ITEM_COOLDOWNS.put(HUNTING_KNIFE, GameConstants.getInTicks(0,45));
-        GameConstants.ITEM_COOLDOWNS.put(KNOCKOUT_DRUG, GameConstants.getInTicks(1,0));
+        GameConstants.ITEM_COOLDOWNS.put(KNOCKOUT_DRUG, GameConstants.getInTicks(0,45));
         GameConstants.ITEM_COOLDOWNS.put(MEDICAL_KIT, GameConstants.getInTicks(1,0));
         GameConstants.ITEM_COOLDOWNS.put(PAN, GameConstants.getInTicks(0,45));
-        GameConstants.ITEM_COOLDOWNS.put(PILL, GameConstants.getInTicks(2,0));
+        GameConstants.ITEM_COOLDOWNS.put(PILL, GameConstants.getInTicks(3,0));
         GameConstants.ITEM_COOLDOWNS.put(POISON_INJECTOR, GameConstants.getInTicks(1,0));
         GameConstants.ITEM_COOLDOWNS.put(SULFURIC_ACID_BARREL, GameConstants.getInTicks(1,0));
+        GameConstants.ITEM_COOLDOWNS.put(WRENCH, GameConstants.getInTicks(2,0));
+        //图标冷却
+        GameConstants.ITEM_COOLDOWNS.put(ICON_ABILITY_COOLDOWN_REFRESH, GameConstants.getInTicks(5,0));
+        GameConstants.ITEM_COOLDOWNS.put(ICON_POTION_EFFECT_REFRESH, GameConstants.getInTicks(3,0));
+        GameConstants.ITEM_COOLDOWNS.put(ICON_POWER_RESTORATION, GameConstants.getInTicks(3,0));
+        GameConstants.ITEM_COOLDOWNS.put(ICON_WEAPON_COOLDOWN_REFRESH, GameConstants.getInTicks(3,0));
+    }
+
+    /// 添加物品组别
+    public static void addItemGroup() {
+        ItemGroupEvents.modifyEntriesEvent(WatheItems.EQUIPMENT_GROUP).register(entries -> {
+            entries.add(BLOWGUN);
+            entries.add(CAPTURE_DEVICE);
+            entries.add(DREAM_IMPRINT);
+            entries.add(HUNTING_KNIFE);
+            entries.add(KNOCKOUT_DRUG);
+            entries.add(MEDICAL_KIT);
+            entries.add(PAN);
+            entries.add(PHONE);
+            entries.add(PILL);
+            entries.add(POISON_INJECTOR);
+            entries.add(SULFURIC_ACID_BARREL);
+            entries.add(WRENCH);
+        });
     }
 
     /// 初始化方法
     public static void init() {
         //添加物品冷却
         addItemCooldowns();
+        //添加物品组别
+        addItemGroup();
     }
 }

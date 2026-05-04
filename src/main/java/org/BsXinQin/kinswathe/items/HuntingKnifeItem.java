@@ -14,9 +14,12 @@ import net.minecraft.util.UseAction;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
-import org.BsXinQin.kinswathe.KinsWatheItems;
+import org.BsXinQin.kinswathe.packet.items.HuntingKnifeC2SPacket;
 import org.BsXinQin.kinswathe.roles.hunter.HunterComponent;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class HuntingKnifeItem extends Item {
 
@@ -27,6 +30,7 @@ public class HuntingKnifeItem extends Item {
         ItemStack stack = player.getStackInHand(hand);
         if (player.getItemCooldownManager().isCoolingDown(this)) return TypedActionResult.fail(stack);
         HunterComponent playerHunter = HunterComponent.KEY.get(player);
+        playerHunter.isSprinting = player.isSprinting();
         playerHunter.useHuntingKnife();
         player.setCurrentHand(hand);
         player.playSound(WatheSounds.ITEM_KNIFE_PREPARE, 1.0f, 1.0f);
@@ -35,16 +39,17 @@ public class HuntingKnifeItem extends Item {
 
     @Override
     public void onStoppedUsing(@NotNull ItemStack stack, @NotNull World world, @NotNull LivingEntity livingEntity, int remainingUseTicks) {
-        if (!(livingEntity instanceof PlayerEntity player) || player.isSpectator() || remainingUseTicks >= this.getMaxUseTime(stack, player) - 10) return;
-        HitResult hitResult = ProjectileUtil.getCollision(player, entity -> entity instanceof @NotNull PlayerEntity target && GameFunctions.isPlayerAliveAndSurvival(target), 3.0f);
-        PlayerEntity targetPlayer = (hitResult instanceof @NotNull EntityHitResult entityHitResult) ? (PlayerEntity) entityHitResult.getEntity() : null;
+        if (!(livingEntity instanceof @NotNull PlayerEntity player) || player.isSpectator() || remainingUseTicks >= this.getMaxUseTime(stack, player) - 10) return;
         setTemporaryCooldown(world, player);
-        if (!world.isClient && targetPlayer != null && remainingUseTicks > 5) {
-            GameConstants.ITEM_COOLDOWNS.put(this, GameConstants.getInTicks(0,45));
-            KinsWatheItems.setItemAfterUsing(player, this, null);
-            GameFunctions.killPlayer(targetPlayer, true, player, GameConstants.DeathReasons.KNIFE);
-            targetPlayer.playSound(WatheSounds.ITEM_KNIFE_STAB, 1.0f, 1.0f);
-            player.swingHand(Hand.MAIN_HAND);
+        if (world.isClient && remainingUseTicks > 5) {
+            HitResult hitResult = ProjectileUtil.getCollision(player, entity -> entity instanceof @NotNull PlayerEntity target && GameFunctions.isPlayerAliveAndSurvival(target), 3.0f);
+            if (hitResult instanceof @NotNull EntityHitResult entityHitResult) {
+                try {
+                    Class<?> networkingClass = Class.forName("net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking");
+                    Method getMethod = networkingClass.getMethod("send", net.minecraft.network.packet.CustomPayload.class);
+                    getMethod.invoke(null, new HuntingKnifeC2SPacket(entityHitResult.getEntity().getId()));
+                } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException | NoSuchMethodException ignored) {}
+            }
         }
     }
 
@@ -62,16 +67,15 @@ public class HuntingKnifeItem extends Item {
 
     @Override
     public int getMaxUseTime(ItemStack stack, LivingEntity livingEntity) {
-        return 100;
+        return 200;
     }
 
-    private void setTemporaryCooldown(@NotNull World world, @NotNull PlayerEntity player) {
+    public void setTemporaryCooldown(@NotNull World world, @NotNull PlayerEntity player) {
         if (world.isClient) return;
         HunterComponent playerHunter = HunterComponent.KEY.get(player);
-        GameConstants.ITEM_COOLDOWNS.put(this, GameConstants.getInTicks(0, playerHunter.knifeTicks * 4 / 20));
-        playerHunter.reset();
-        if (GameFunctions.isPlayerAliveAndSurvival(player)) {
-            player.getItemCooldownManager().set(this, GameConstants.ITEM_COOLDOWNS.get(this));
+        if (GameFunctions.isPlayerAliveAndSurvival(player) && playerHunter.isSprinting) {
+            player.getItemCooldownManager().set(this, GameConstants.getInTicks(0, playerHunter.knifeTicks / 10));
         }
+        playerHunter.stopHuntingKnife();
     }
 }

@@ -4,8 +4,6 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,7 +27,6 @@ public abstract class HunterSprintMixin extends LivingEntity {
             ItemStack stack = player.getActiveItem();
             Item item = stack.getItem();
             if (item.getUseAction(stack) == UseAction.SPEAR && player.isSprinting()) {
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2, 0, false, false, false));
                 return 0.15f;
             }
         }

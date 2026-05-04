@@ -1,16 +1,17 @@
 package org.BsXinQin.kinswathe;
 
+import dev.doctor4t.wathe.entity.PlayerBodyEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import org.BsXinQin.kinswathe.component.AbilityPlayerComponent;
-import org.BsXinQin.kinswathe.component.ConfigWorldComponent;
-import org.BsXinQin.kinswathe.component.CustomWinnerComponent;
-import org.BsXinQin.kinswathe.component.GameSafeComponent;
+import org.BsXinQin.kinswathe.component.*;
 import org.BsXinQin.kinswathe.roles.cook.CookComponent;
 import org.BsXinQin.kinswathe.roles.dreamer.DreamerComponent;
 import org.BsXinQin.kinswathe.roles.dreamer.DreamerKillerComponent;
+import org.BsXinQin.kinswathe.roles.hacker.HackerComponent;
+import org.BsXinQin.kinswathe.roles.hacker.HackerPhoneComponent;
 import org.BsXinQin.kinswathe.roles.hunter.HunterComponent;
 import org.BsXinQin.kinswathe.roles.kidnapper.KidnapperComponent;
 import org.BsXinQin.kinswathe.roles.physician.PhysicianComponent;
+import org.BsXinQin.kinswathe.roles.technician.TechnicianComponent;
 import org.jetbrains.annotations.NotNull;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
@@ -22,18 +23,23 @@ public class KinsWatheComponents implements EntityComponentInitializer, WorldCom
 
     @Override
     public void registerEntityComponentFactories(@NotNull EntityComponentFactoryRegistry registry) {
-        registry.beginRegistration(PlayerEntity.class, GameSafeComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(GameSafeComponent::new);
+        registry.beginRegistration(PlayerEntity.class, PlayerEffectComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(PlayerEffectComponent::new);
         registry.beginRegistration(PlayerEntity.class, AbilityPlayerComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(AbilityPlayerComponent::new);
+        registry.beginRegistration(PlayerBodyEntity.class, BodyDeathReasonComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(BodyDeathReasonComponent::new);
         registry.beginRegistration(PlayerEntity.class, CookComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(CookComponent::new);
         registry.beginRegistration(PlayerEntity.class, DreamerComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(DreamerComponent::new);
         registry.beginRegistration(PlayerEntity.class, DreamerKillerComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(DreamerKillerComponent::new);
+        registry.beginRegistration(PlayerEntity.class, HackerComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(HackerComponent::new);
+        registry.beginRegistration(PlayerEntity.class, HackerPhoneComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(HackerPhoneComponent::new);
         registry.beginRegistration(PlayerEntity.class, HunterComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(HunterComponent::new);
         registry.beginRegistration(PlayerEntity.class, KidnapperComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(KidnapperComponent::new);
         registry.beginRegistration(PlayerEntity.class, PhysicianComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(PhysicianComponent::new);
+        registry.beginRegistration(PlayerEntity.class, TechnicianComponent.KEY).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(TechnicianComponent::new);
     }
 
     @Override
     public void registerWorldComponentFactories(@NotNull WorldComponentFactoryRegistry registry) {
+        registry.register(GameSafeComponent.KEY, GameSafeComponent::new);
         registry.register(ConfigWorldComponent.KEY, ConfigWorldComponent::new);
         registry.register(CustomWinnerComponent.KEY, CustomWinnerComponent::new);
     }

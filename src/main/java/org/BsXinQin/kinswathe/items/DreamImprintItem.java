@@ -20,7 +20,6 @@ public class DreamImprintItem extends Item {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, @NotNull PlayerEntity player, @NotNull LivingEntity entity, @NotNull Hand hand) {
-        if (player.getItemCooldownManager().isCoolingDown(this)) return ActionResult.FAIL;
         if (!player.getWorld().isClient && entity instanceof @NotNull PlayerEntity targetPlayer) {
             DreamerComponent targetDream = DreamerComponent.KEY.get(targetPlayer);
             if (targetDream.dreamArmor == 0) {

@@ -7,7 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import org.BsXinQin.kinswathe.KinsWatheConfig;
 import org.BsXinQin.kinswathe.KinsWatheRoles;
-import org.BsXinQin.kinswathe.component.PlayerPurchaseComponent;
+import org.BsXinQin.kinswathe.KinsWatheShops;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,19 +28,17 @@ public abstract class LicensedVillainShopMixin {
 
 
     @Inject(method = "tryBuy", at = @At("HEAD"), cancellable = true)
-    void tryBuy(int index, CallbackInfo ci) {
+    void tryBuy(int index, @NotNull CallbackInfo ci) {
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
         if (gameWorld.isRole(this.player, KinsWatheRoles.LICENSED_VILLAIN)) {
-            switch (index) {
-                case 0:
-                    this.item = WatheItems.REVOLVER;
-                    this.price = KinsWatheConfig.HANDLER.instance().LicensedVillainRevolverPrice;
-                    break;
-                default:
-                    return;
+            if (index == 0) {
+                this.item = WatheItems.REVOLVER;
+                this.price = KinsWatheConfig.HANDLER.instance().LicensedVillainRevolverPrice;
+            } else {
+                return;
             }
             if (index != 0) return;
-            if (PlayerPurchaseComponent.handlePurchase(this.player, this.balance, this.item, this.price)) {
+            if (KinsWatheShops.handlePurchase(this.player, this.balance, this.item, this.price)) {
                 this.balance -= this.price;
                 this.sync();
             }

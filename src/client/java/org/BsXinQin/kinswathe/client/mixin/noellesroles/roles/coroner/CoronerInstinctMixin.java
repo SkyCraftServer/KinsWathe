@@ -21,13 +21,16 @@ public abstract class CoronerInstinctMixin {
 
     @Inject(method = "getInstinctHighlight", at = @At("HEAD"), cancellable = true)
     private static void getInstinctHighlight(@NotNull Entity target, @NotNull CallbackInfoReturnable<Integer> cir) {
-        if (!FabricLoader.getInstance().isModLoaded("noellesroles") || MinecraftClient.getInstance().player == null) return;
+        if (!FabricLoader.getInstance().isModLoaded("noellesroles")) return;
+        if (MinecraftClient.getInstance().player == null) return;
         if (!ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).EnableNoellesRolesModify || !ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).CoronerInstinctModify) return;
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
         if (target instanceof @NotNull PlayerBodyEntity) {
-            PlayerMoodComponent playerMood = PlayerMoodComponent.KEY.get(MinecraftClient.getInstance().player);
-            if (gameWorld.isRole(MinecraftClient.getInstance().player, noellesrolesRoles("CORONER")) && WatheClient.isPlayerAliveAndInSurvival() && !playerMood.isLowerThanMid()) {
-                cir.setReturnValue(0x606060);
+            if (WatheClient.moodComponent != null) {
+                PlayerMoodComponent playerMood = PlayerMoodComponent.KEY.get(MinecraftClient.getInstance().player);
+                if (gameWorld.isRole(MinecraftClient.getInstance().player, noellesrolesRoles("CORONER")) && WatheClient.isPlayerAliveAndInSurvival() && (playerMood != null && !playerMood.isLowerThanMid())) {
+                    cir.setReturnValue(0x606060);
+                }
             }
         }
     }

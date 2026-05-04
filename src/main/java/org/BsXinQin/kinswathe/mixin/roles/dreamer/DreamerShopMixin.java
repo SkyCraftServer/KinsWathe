@@ -7,7 +7,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import org.BsXinQin.kinswathe.KinsWatheRoles;
 import org.BsXinQin.kinswathe.KinsWatheShops;
-import org.BsXinQin.kinswathe.component.PlayerPurchaseComponent;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,9 +27,9 @@ public abstract class DreamerShopMixin {
         if (!FabricLoader.getInstance().isModLoaded("noellesroles")) return;
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
         if (gameWorld.isRole(this.player, KinsWatheRoles.DREAMER)) {
-            if (index < 0 || index >= KinsWatheShops.getKillerNeutralRolesShop(this.player.getWorld()).size()) return;
-            ShopEntry entries = KinsWatheShops.getKillerNeutralRolesShop(this.player.getWorld()).get(index);
-            if (PlayerPurchaseComponent.handlePurchase(this.player, this.balance, entries.stack().getItem(), entries.price())) {
+            if (index < 0 || index >= KinsWatheShops.getKillerNeutralRolesShop().size()) return;
+            ShopEntry entries = KinsWatheShops.getKillerNeutralRolesShop().get(index);
+            if (KinsWatheShops.handlePurchase(this.player, this.balance, entries.stack().getItem(), entries.price())) {
                 this.balance -= entries.price();
                 this.sync();
             }

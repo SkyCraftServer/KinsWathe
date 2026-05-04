@@ -23,13 +23,13 @@ public abstract class GameSafeHudMixin {
     @Inject(method = "render", at = @At("HEAD"))
     private void getGameSafeHudMixin(@NotNull DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if (MinecraftClient.getInstance().player == null) return;
-        if (!ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).EnableGameSafeTime) return;
+        if (!ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).EnableStartSafeTime) return;
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
-        GameSafeComponent playerSafe = GameSafeComponent.KEY.get(MinecraftClient.getInstance().player);
-        if (gameWorld.isRunning() && WatheClient.isPlayerAliveAndInSurvival() && playerSafe.isGameSafe) {
+        GameSafeComponent gameSafe = GameSafeComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
+        if (gameWorld.isRunning() && WatheClient.isPlayerAliveAndInSurvival() && gameSafe.isSafe()) {
             int width = context.getScaledWindowWidth();
             int height = context.getScaledWindowHeight();
-            int safeTime = ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).StartingCooldown - playerSafe.safeTicks / 20 - 1;
+            int safeTime = ConfigWorldComponent.KEY.get(MinecraftClient.getInstance().player.getWorld()).StartingCooldown - gameSafe.safeTicks / 20 - 1;
             Text safeTimeText;
             if (safeTime <= 0) {
                 safeTimeText = Text.translatable("tip.kinswathe.game_no_safe_time", safeTime);

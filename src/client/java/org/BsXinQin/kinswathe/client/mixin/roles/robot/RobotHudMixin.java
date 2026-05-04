@@ -30,13 +30,12 @@ public abstract class RobotHudMixin {
         AbilityPlayerComponent ability = AbilityPlayerComponent.KEY.get(MinecraftClient.getInstance().player);
         if (gameWorld.isRole(MinecraftClient.getInstance().player, KinsWatheRoles.ROBOT) && WatheClient.isPlayerAliveAndInSurvival()) {
             int drawY = context.getScaledWindowHeight();
-
-            Text line = Text.translatable("tip.kinswathe.ability.can_use", KinsWatheInitializeClient.abilityBind.getBoundKeyLocalizedText());
-
+            Text line;
             if (ability.cooldown > 0) {
                 line = Text.translatable("tip.kinswathe.cooldown", ability.cooldown / 20);
+            } else {
+                line = Text.translatable("tip.kinswathe.ability.can_use", KinsWatheInitializeClient.abilityBind.getBoundKeyLocalizedText());
             }
-
             drawY -= getTextRenderer().getWrappedLinesHeight(line, 999999);
             context.drawTextWithShadow(getTextRenderer(), line, context.getScaledWindowWidth() - getTextRenderer().getWidth(line), drawY, KinsWatheRoles.ROBOT.color());
         }

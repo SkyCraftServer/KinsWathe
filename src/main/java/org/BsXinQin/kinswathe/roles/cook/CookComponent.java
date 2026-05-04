@@ -18,7 +18,6 @@ public class CookComponent implements AutoSyncedComponent, ServerTickingComponen
 
     @NotNull private final PlayerEntity player;
     public int eatTicks = 0;
-    public int panStunTicks = 0;
 
     public CookComponent(@NotNull PlayerEntity player) {this.player = player;}
 
@@ -27,10 +26,6 @@ public class CookComponent implements AutoSyncedComponent, ServerTickingComponen
         if (this.eatTicks > 0) {
             this.notInGameReset();
             -- this.eatTicks;
-            this.sync();
-        }
-        if (this.panStunTicks > 0) {
-            -- this.panStunTicks;
             this.sync();
         }
     }
@@ -46,14 +41,8 @@ public class CookComponent implements AutoSyncedComponent, ServerTickingComponen
         this.sync();
     }
 
-    public void setPanStun(int ticks) {
-        this.panStunTicks = ticks;
-        this.sync();
-    }
-
     public void reset() {
         this.eatTicks = 0;
-        this.panStunTicks = 0;
         this.sync();
     }
 
@@ -64,12 +53,10 @@ public class CookComponent implements AutoSyncedComponent, ServerTickingComponen
     @Override
     public void writeToNbt(@NotNull NbtCompound tag, RegistryWrapper.@NotNull WrapperLookup registryLookup) {
         tag.putInt("eatTicks", this.eatTicks);
-        tag.putInt("panStunTicks", this.panStunTicks);
     }
 
     @Override
     public void readFromNbt(@NotNull NbtCompound tag, RegistryWrapper.@NotNull WrapperLookup registryLookup) {
         this.eatTicks = tag.contains("eatTicks") ? tag.getInt("eatTicks") : 0;
-        this.panStunTicks = tag.contains("panStunTicks") ? tag.getInt("panStunTicks") : 0;
     }
 }

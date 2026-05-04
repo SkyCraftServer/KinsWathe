@@ -4,6 +4,7 @@ import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.cca.PlayerPoisonComponent;
 import dev.doctor4t.wathe.cca.PlayerShopComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -28,11 +29,11 @@ public abstract class DrugmakerGiveCoinsMixin {
 
     @Inject(method = "setPoisonTicks", at = @At("HEAD"))
     private void giveDrugmakerCoins(int ticks, @NotNull UUID poisoner, CallbackInfo ci) {
-        if (ticks <= 0 || poisoner == null || GameFunctions.isPlayerSpectatingOrCreative(this.player)) return;
+        if (ticks <= 0 || GameFunctions.isPlayerSpectatingOrCreative(this.player)) return;
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
-        if (gameWorld.isRole(this.player, KinsWatheRoles.ROBOT) || !(this.player instanceof ServerPlayerEntity) || poisoner.equals(DELUSION_MARKER)) return;
+        if (gameWorld.isRole(this.player, KinsWatheRoles.ROBOT) || !(this.player instanceof @NotNull ServerPlayerEntity) || (poisoner != null && (poisoner.equals(DELUSION_MARKER) || (FabricLoader.getInstance().isModLoaded("noellesroles") && gameWorld.isRole(poisoner, KinsWatheRoles.noellesrolesRoles("BARTENDER")))))) return;
         for (ServerPlayerEntity serverPlayer : this.player.getServer().getPlayerManager().getPlayerList()) {
-            if (serverPlayer == null) return;
+            if (serverPlayer == null) continue;
             if (gameWorld.isRole(serverPlayer, KinsWatheRoles.DRUGMAKER) && GameFunctions.isPlayerAliveAndSurvival(serverPlayer)) {
                 PlayerShopComponent playerShop = PlayerShopComponent.KEY.get(serverPlayer);
                 serverPlayer.sendMessage(Text.translatable("tip.kinswathe.drugmaker.poisoned").withColor(KinsWatheRoles.DRUGMAKER.color()), true);

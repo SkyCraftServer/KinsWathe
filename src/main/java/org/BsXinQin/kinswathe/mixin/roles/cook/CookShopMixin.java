@@ -11,6 +11,7 @@ import org.BsXinQin.kinswathe.KinsWatheItems;
 import org.BsXinQin.kinswathe.KinsWatheRoles;
 import org.BsXinQin.kinswathe.component.ConfigWorldComponent;
 import org.BsXinQin.kinswathe.component.PlayerPurchaseComponent;
+import org.BsXinQin.kinswathe.KinsWatheShops;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -58,7 +59,7 @@ public abstract class CookShopMixin {
                     return;
             }
             if (index < 0 || index > 3) return;
-            if (PlayerPurchaseComponent.handlePurchase(this.player, this.balance, this.item, this.price)) {
+            if (KinsWatheShops.handlePurchase(this.player, this.balance, this.item, this.price)) {
                 this.balance -= this.price;
                 this.sync();
             }

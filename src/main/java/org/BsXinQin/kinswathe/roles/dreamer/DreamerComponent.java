@@ -1,6 +1,7 @@
 package org.BsXinQin.kinswathe.roles.dreamer;
 
 import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.wathe.cca.PlayerPsychoComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -67,10 +68,23 @@ public class DreamerComponent implements AutoSyncedComponent, ServerTickingCompo
     public void teleportToDreamer() {
         if (this.dreamerUUID == null || this.player.getWorld().isClient) return;
         PlayerEntity dreamer = this.player.getWorld().getPlayerByUuid(this.dreamerUUID);
+        GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
+        PlayerPsychoComponent playerPsycho = PlayerPsychoComponent.KEY.get(this.player);
         if (GameFunctions.isPlayerAliveAndSurvival(dreamer) && GameFunctions.isPlayerAliveAndSurvival(this.player)) {
-            ((ServerWorld) this.player.getWorld()).spawnParticles(ParticleTypes.PORTAL, this.player.getX(), this.player.getY(), this.player.getZ(), 75, 0.5, 1.5, 0.5, 0.1);
-            this.player.getWorld().playSound(null, this.player.getBlockPos(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            this.player.teleport((ServerWorld) this.player.getWorld(), dreamer.getX(), dreamer.getY(), dreamer.getZ(), Set.of(), dreamer.getYaw(), dreamer.getPitch());
+            if (gameWorld.isRole(dreamer, KinsWatheRoles.DREAMER)) {
+                DreamerKillerComponent playerDreamer = DreamerKillerComponent.KEY.get(dreamer);
+                if (!playerDreamer.hasBecomeKiller) {
+                    playerDreamer.dreamerCounts += 1;
+                    playerDreamer.sync();
+                }
+            }
+            if (this.player.getWorld() instanceof @NotNull ServerWorld serverWorld) {
+                serverWorld.spawnParticles(ParticleTypes.PORTAL, this.player.getX(), this.player.getY(), this.player.getZ(), 75, 0.5, 1.5, 0.5, 0.1);
+                serverWorld.playSound(null, this.player.getBlockPos(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                if (playerPsycho.psychoTicks <= 0) {
+                    this.player.teleport(serverWorld, dreamer.getX(), dreamer.getY(), dreamer.getZ(), Set.of(), dreamer.getYaw(), dreamer.getPitch());
+                }
+            }
             dreamer.playSoundToPlayer(SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
         }
     }

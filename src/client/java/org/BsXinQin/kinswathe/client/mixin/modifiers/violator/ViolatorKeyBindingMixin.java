@@ -4,6 +4,7 @@ import dev.doctor4t.wathe.client.WatheClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import org.BsXinQin.kinswathe.KinsWatheRoles;
+import org.BsXinQin.kinswathe.component.PlayerEffectComponent;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,10 +21,11 @@ public abstract class ViolatorKeyBindingMixin {
     private void violatorUnLockKeys(@NotNull CallbackInfoReturnable<Boolean> cir) {
         if (MinecraftClient.getInstance().player == null) return;
         WorldModifierComponent modifier = WorldModifierComponent.KEY.get(MinecraftClient.getInstance().player.getWorld());
+        PlayerEffectComponent playerStun = PlayerEffectComponent.KEY.get(MinecraftClient.getInstance().player);
         if (modifier.isModifier(MinecraftClient.getInstance().player, KinsWatheRoles.VIOLATOR) && WatheClient.isPlayerAliveAndInSurvival()) {
             KeyBinding key = (KeyBinding) (Object) this;
             boolean jumpKey = key.equals(MinecraftClient.getInstance().options.jumpKey);
-            if (jumpKey) {
+            if (playerStun.stunTicks <= 0 && jumpKey) {
                 cir.setReturnValue(keyPressed());
             }
         }

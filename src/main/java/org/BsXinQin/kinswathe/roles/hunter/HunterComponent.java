@@ -17,13 +17,14 @@ public class HunterComponent implements AutoSyncedComponent, ServerTickingCompon
 
     @NotNull private final PlayerEntity player;
     public boolean isUseKnife = false;
+    public boolean isSprinting = false;
     public int knifeTicks = 0;
 
     public HunterComponent(@NotNull PlayerEntity player) {this.player = player;}
 
     @Override
     public void serverTick() {
-        if (this.isUseKnife && knifeTicks <= 100) {
+        if (this.isUseKnife && knifeTicks <= 200) {
             ++ this.knifeTicks;
             this.sync();
         }
@@ -35,7 +36,14 @@ public class HunterComponent implements AutoSyncedComponent, ServerTickingCompon
         this.sync();
     }
 
+    public void stopHuntingKnife() {
+        this.isSprinting = false;
+        this.isUseKnife = false;
+        this.sync();
+    }
+
     public void reset() {
+        this.isSprinting = false;
         this.isUseKnife = false;
         this.knifeTicks = 0;
         this.sync();
@@ -49,11 +57,13 @@ public class HunterComponent implements AutoSyncedComponent, ServerTickingCompon
     public void writeToNbt(@NotNull NbtCompound tag, RegistryWrapper.@NotNull WrapperLookup registryLookup) {
         tag.putInt("knifeTicks", this.knifeTicks);
         tag.putBoolean("isUseKnife", this.isUseKnife);
+        tag.putBoolean("isSprinting", this.isSprinting);
     }
 
     @Override
     public void readFromNbt(@NotNull NbtCompound tag, RegistryWrapper.@NotNull WrapperLookup registryLookup) {
         this.knifeTicks = tag.contains("knifeTicks") ? tag.getInt("knifeTicks") : 0;
         this.isUseKnife = tag.contains("isUseKnife") && tag.getBoolean("isUseKnife");
+        this.isSprinting = tag.contains("isSprinting") && tag.getBoolean("isSprinting");
     }
 }

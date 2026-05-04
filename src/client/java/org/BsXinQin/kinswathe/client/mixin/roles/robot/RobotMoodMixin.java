@@ -41,7 +41,7 @@ public class RobotMoodMixin {
             context.getMatrices().push();
             context.getMatrices().translate(0.0F, 10.0F * moodOffset, 0.0F);
             MatrixStack var10000 = context.getMatrices();
-            var10000.translate(26.0F, (float)(8 + 9), 0.0F);
+            var10000.translate(26.0F, (float) (8 + 9), 0.0F);
             context.getMatrices().scale((moodTextWidth - 8.0F) * moodRender, 1.0F, 1.0F);
             context.fill(0, 0, 1, 1, MathHelper.hsvToRgb(moodRender / 3.0F, 1.0F, 1.0F) | (int) (moodAlpha * 255) << 24);
             context.getMatrices().pop();

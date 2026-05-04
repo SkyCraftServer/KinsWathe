@@ -22,7 +22,7 @@ public abstract class LicensedVillainGiveCoinsMixin {
 
     @Inject(method = "setMood", at = @At("HEAD"))
     void giveLicensedVillainCoins(float mood, CallbackInfo ci) {
-        GameWorldComponent gameWorld = (GameWorldComponent)GameWorldComponent.KEY.get(this.player.getWorld());
+        GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
         Role role = gameWorld.getRole(this.player);
         if (role != null && mood > getMood()) {
             if (gameWorld.isRole(this.player, KinsWatheRoles.LICENSED_VILLAIN)) {
