@@ -5,9 +5,11 @@ import dev.doctor4t.wathe.cca.PlayerShopComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import org.BsXinQin.kinswathe.KinsWathe;
 import org.BsXinQin.kinswathe.KinsWatheConfig;
 import org.BsXinQin.kinswathe.KinsWatheItems;
 import org.BsXinQin.kinswathe.KinsWatheRoles;
+import org.BsXinQin.kinswathe.component.ConfigWorldComponent;
 import org.BsXinQin.kinswathe.component.PlayerPurchaseComponent;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -30,7 +32,7 @@ public abstract class CookShopMixin {
     @Inject(method = "tryBuy", at = @At("HEAD"), cancellable = true)
     void tryBuy(int index, @NotNull CallbackInfo ci) {
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
-        if (gameWorld.isRole(this.player, KinsWathe.COOK)) {
+        if (gameWorld.isRole(this.player, KinsWatheRoles.COOK)) {
             boolean enablePan = ConfigWorldComponent.KEY.get(this.player.getWorld()).EnableCookPanInShop;
             Item item;
             int price;

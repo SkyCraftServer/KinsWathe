@@ -6,7 +6,6 @@ import dev.doctor4t.wathe.api.event.AllowPlayerDeath;
 import dev.doctor4t.wathe.api.event.AllowPlayerPunching;
 import dev.doctor4t.wathe.game.GameConstants;
 import dev.doctor4t.wathe.index.WatheItems;
-import lombok.SneakyThrows;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -217,11 +216,21 @@ public class KinsWatheRoles {
     }
 
     /// 引入NoellesRoles角色
-    @SneakyThrows
     public static Role noellesrolesRoles(String role) {
-        Class<?> roleClass = Class.forName("org.agmas.noellesroles.Noellesroles");
-        Field roleField = roleClass.getField(role);
-        return (Role) roleField.get(null);
+        try {
+            Class<?> roleClass = Class.forName("org.agmas.noellesroles.Noellesroles");
+            Field roleField = roleClass.getField(role);
+            return (Role) roleField.get(null);
+        } catch (ReflectiveOperationException | ClassCastException e) {
+            return null;
+        }
+    }
+
+    private static void addNoellesRoleIfPresent(List<Role> roles, String roleName) {
+        Role role = noellesrolesRoles(roleName);
+        if (role != null) {
+            roles.add(role);
+        }
     }
 
     /// 添加有收入的身份
@@ -239,17 +248,17 @@ public class KinsWatheRoles {
         roles.add(LICENSED_VILLAIN);
         roles.add(PHYSICIAN);
         if (FabricLoader.getInstance().isModLoaded("noellesroles")) {
-            roles.add(noellesrolesRoles("MIMIC"));
-            roles.add(noellesrolesRoles("JESTER"));
-            roles.add(noellesrolesRoles("PHANTOM"));
-            roles.add(noellesrolesRoles("SWAPPER"));
-            roles.add(noellesrolesRoles("TRAPPER"));
-            roles.add(noellesrolesRoles("RECALLER"));
-            roles.add(noellesrolesRoles("BARTENDER"));
-            roles.add(noellesrolesRoles("MORPHLING"));
-            roles.add(noellesrolesRoles("NOISEMAKER"));
-            roles.add(noellesrolesRoles("EXECUTIONER"));
-            roles.add(noellesrolesRoles("THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES"));
+            addNoellesRoleIfPresent(roles, "MIMIC");
+            addNoellesRoleIfPresent(roles, "JESTER");
+            addNoellesRoleIfPresent(roles, "PHANTOM");
+            addNoellesRoleIfPresent(roles, "SWAPPER");
+            addNoellesRoleIfPresent(roles, "TRAPPER");
+            addNoellesRoleIfPresent(roles, "RECALLER");
+            addNoellesRoleIfPresent(roles, "BARTENDER");
+            addNoellesRoleIfPresent(roles, "MORPHLING");
+            addNoellesRoleIfPresent(roles, "NOISEMAKER");
+            addNoellesRoleIfPresent(roles, "EXECUTIONER");
+            addNoellesRoleIfPresent(roles, "THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES");
         }
         return List.copyOf(roles);
     }
@@ -265,14 +274,14 @@ public class KinsWatheRoles {
         roles.add(JUDGE);
         roles.add(KIDNAPPER);
         if (FabricLoader.getInstance().isModLoaded("noellesroles")) {
-            roles.add(noellesrolesRoles("MIMIC"));
-            roles.add(noellesrolesRoles("JESTER"));
-            roles.add(noellesrolesRoles("PHANTOM"));
-            roles.add(noellesrolesRoles("SWAPPER"));
-            roles.add(noellesrolesRoles("MORPHLING"));
-            roles.add(noellesrolesRoles("NOISEMAKER"));
-            roles.add(noellesrolesRoles("EXECUTIONER"));
-            roles.add(noellesrolesRoles("THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES"));
+            addNoellesRoleIfPresent(roles, "MIMIC");
+            addNoellesRoleIfPresent(roles, "JESTER");
+            addNoellesRoleIfPresent(roles, "PHANTOM");
+            addNoellesRoleIfPresent(roles, "SWAPPER");
+            addNoellesRoleIfPresent(roles, "MORPHLING");
+            addNoellesRoleIfPresent(roles, "NOISEMAKER");
+            addNoellesRoleIfPresent(roles, "EXECUTIONER");
+            addNoellesRoleIfPresent(roles, "THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES");
         }
         return List.copyOf(roles);
     }

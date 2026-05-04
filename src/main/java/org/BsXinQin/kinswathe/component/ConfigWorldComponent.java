@@ -32,6 +32,7 @@ public class ConfigWorldComponent implements AutoSyncedComponent, ServerTickingC
     public int BellringerAbilityPrice = 200;
     public int CleanerAbilityPrice = 200;
     public int CookPanPrice = 250;
+    public boolean EnableCookPanInShop = false;
     public int DetectiveAbilityPrice = 200;
     public int DrugmakerGetCoins = 50;
     public int DrugmakerPoisonInjectorPrice = 125;
