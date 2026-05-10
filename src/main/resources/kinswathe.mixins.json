@@ -11,7 +11,6 @@
     "host.GiveCoinsForMoodMixin",
     "host.KillerNoBackfireMixin",
     "host.MoneyIncreaseMixin",
-    "host.NeutralAnnouncementMixin",
     "host.PassiveIncomeMixin",
     "host.PlayerEffectMixin",
     "host.SprintTimeFixMixin",

@@ -35,7 +35,7 @@ public class ConfigWorldComponent implements AutoSyncedComponent, ServerTickingC
     public boolean BodymakerAbilityFakeRole = true;
     public int CleanerAbilityPrice = 200;
     public int CookPanPrice = 250;
-    public boolean EnableCookPanInShop = false;
+    public boolean EnableCookPanInShop = true;
     public int DetectiveAbilityPrice = 200;
     public int DrugmakerGetCoins = 50;
     public int DrugmakerPoisonInjectorPrice = 100;
@@ -125,6 +125,7 @@ public class ConfigWorldComponent implements AutoSyncedComponent, ServerTickingC
         if (tag.contains("KidnapperKnockoutDrugPrice"))   this.KidnapperKnockoutDrugPrice = tag.getInt("KidnapperKnockoutDrugPrice");
         if (tag.contains("LicensedVillainRevolverPrice"))   this.LicensedVillainRevolverPrice = tag.getInt("LicensedVillainRevolverPrice");
         if (tag.contains("EnableCookPanInShop"))   this.EnableCookPanInShop = tag.getBoolean("EnableCookPanInShop");
+        else this.EnableCookPanInShop = KinsWatheConfig.HANDLER.instance().EnableCookPanInShop;
         if (tag.contains("PhysicianPillPrice"))   this.PhysicianPillPrice = tag.getInt("PhysicianPillPrice");
         if (tag.contains("TechnicianWrenchPrice"))   this.TechnicianWrenchPrice = tag.getInt("TechnicianWrenchPrice");
         if (tag.contains("TechnicianCaptureDevicePrice"))   this.TechnicianCaptureDevicePrice = tag.getInt("TechnicianCaptureDevicePrice");

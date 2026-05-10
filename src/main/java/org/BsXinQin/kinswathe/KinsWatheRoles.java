@@ -1,6 +1,7 @@
 package org.BsXinQin.kinswathe;
 
 import dev.doctor4t.wathe.api.Role;
+import dev.doctor4t.wathe.api.event.GameEvents;
 import dev.doctor4t.wathe.api.WatheRoles;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.cca.PlayerShopComponent;
@@ -272,6 +273,14 @@ public class KinsWatheRoles {
         return FabricLoader.getInstance().isModLoaded("noellesroles") && gameWorld.getRole(player) != null && (KinsWatheRoles.noellesrolesKillerSidedNeutrals(gameWorld.getRole(player)) || gameWorld.isRole(player, noellesrolesRoles("MIMIC")));
     }
 
+    /// 从NoellesRoles添加角色
+    public static void addNoellesRoleIfPresent(@NotNull List<Role> roles, @NotNull String roleName) {
+        Role role = noellesrolesRoles(roleName);
+        if (role != null) {
+            roles.add(role);
+        }
+    }
+
     /// 添加有任务收入的身份
     public static List<Role> rolesHaveTaskIncome() {
         List<Role> roles = new ArrayList<>();
@@ -380,8 +389,13 @@ public class KinsWatheRoles {
     /// 注册中立结算界面
     public static RoleAnnouncementTexts.RoleAnnouncementText NEUTRAL_TEXT = new KinsWatheAnnouncementText();
     public static void registerNeutralAnnouncement() {
-        if (!KinsWatheConfig.HANDLER.instance().EnableNeutralAnnouncement) return;
         RoleAnnouncementTexts.registerRoleAnnouncementText(NEUTRAL_TEXT);
+        GameEvents.ON_INITIALIZE_ROLE_ANNOUNCEMENT.register((world, gameWorld, players, player, killerCount) -> {
+            if (!KinsWatheConfig.HANDLER.instance().EnableNeutralAnnouncement) return false;
+            if (gameWorld.getRole(player) == null) return false;
+            ServerPlayNetworking.send(player, new dev.doctor4t.wathe.util.AnnounceWelcomePayload(RoleAnnouncementTexts.ROLE_ANNOUNCEMENT_TEXTS.indexOf(gameWorld.isRole(player, WatheRoles.KILLER) ? RoleAnnouncementTexts.KILLER : gameWorld.isRole(player, WatheRoles.VIGILANTE) ? RoleAnnouncementTexts.VIGILANTE : !gameWorld.isInnocent(player) && !gameWorld.canUseKillerFeatures(player) ? NEUTRAL_TEXT : RoleAnnouncementTexts.CIVILIAN), killerCount, players.size() - killerCount));
+            return true;
+        });
     }
 
     /// 设置初始事件

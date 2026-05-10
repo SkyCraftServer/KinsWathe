@@ -130,7 +130,7 @@ public class KinsWatheConfig {
     public int LicensedVillainRevolverPrice = 300;
 
     @SerialEntry(comment = "Cook: whether to show pan in shop.")
-    public boolean EnableCookPanInShop = false;
+    public boolean EnableCookPanInShop = true;
     @SerialEntry(comment = "Physician: modify price of Pill.")
     public int PhysicianPillPrice = 300;
 

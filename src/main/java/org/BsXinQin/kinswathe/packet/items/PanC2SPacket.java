@@ -30,7 +30,9 @@ public record PanC2SPacket(int target) implements CustomPayload {
             if (target.distanceTo(player) > 3.0F) return;
             PlayerEffectComponent targetEffect = PlayerEffectComponent.KEY.get(target);
             targetEffect.setStunTicks(100);
-            KinsWatheItems.setItemAfterUsing(player, KinsWatheItems.PAN, null);
+            Hand usedHand = player.getMainHandStack().isOf(KinsWatheItems.PAN) ? Hand.MAIN_HAND : null;
+            if (usedHand == null && player.getOffHandStack().isOf(KinsWatheItems.PAN)) usedHand = Hand.OFF_HAND;
+            KinsWatheItems.setItemAfterUsing(player, KinsWatheItems.PAN, usedHand);
             target.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.8f, 0.8f);
             player.swingHand(Hand.MAIN_HAND);
         }

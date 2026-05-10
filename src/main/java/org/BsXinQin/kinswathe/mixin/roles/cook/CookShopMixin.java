@@ -10,7 +10,6 @@ import org.BsXinQin.kinswathe.KinsWatheConfig;
 import org.BsXinQin.kinswathe.KinsWatheItems;
 import org.BsXinQin.kinswathe.KinsWatheRoles;
 import org.BsXinQin.kinswathe.component.ConfigWorldComponent;
-import org.BsXinQin.kinswathe.component.PlayerPurchaseComponent;
 import org.BsXinQin.kinswathe.KinsWatheShops;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -35,30 +34,32 @@ public abstract class CookShopMixin {
         GameWorldComponent gameWorld = GameWorldComponent.KEY.get(this.player.getWorld());
         if (gameWorld.isRole(this.player, KinsWatheRoles.COOK)) {
             boolean enablePan = ConfigWorldComponent.KEY.get(this.player.getWorld()).EnableCookPanInShop;
-            Item item;
-            int price;
+            Item selectedItem;
+            int selectedPrice;
             switch (index) {
                 case 0:
                     if (!enablePan) return;
-                    item = KinsWatheItems.PAN;
-                    price = 250;
+                    selectedItem = KinsWatheItems.PAN;
+                    selectedPrice = 250;
                     break;
                 case 1:
-                    this.item = Items.COOKED_BEEF;
-                    this.price = 75;
+                    selectedItem = Items.COOKED_BEEF;
+                    selectedPrice = 75;
                     break;
                 case 2:
-                    this.item = Items.COOKED_CHICKEN;
-                    this.price = 75;
+                    selectedItem = Items.COOKED_CHICKEN;
+                    selectedPrice = 75;
                     break;
                 case 3:
-                    this.item = Items.COOKED_PORKCHOP;
-                    this.price = 75;
+                    selectedItem = Items.COOKED_PORKCHOP;
+                    selectedPrice = 75;
                     break;
                 default:
                     return;
             }
             if (index < 0 || index > 3) return;
+            this.item = selectedItem;
+            this.price = selectedPrice;
             if (KinsWatheShops.handlePurchase(this.player, this.balance, this.item, this.price)) {
                 this.balance -= this.price;
                 this.sync();

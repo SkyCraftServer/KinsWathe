@@ -6,6 +6,7 @@ import dev.doctor4t.wathe.index.WatheItems;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Hand;
@@ -108,9 +109,13 @@ public class KinsWatheItems {
     /// 设置物品使用
     public static void setItemAfterUsing(@NotNull PlayerEntity player, @NotNull Item item, Hand hand) {
         Integer cooldown = GameConstants.ITEM_COOLDOWNS.get(item);
-        if (GameFunctions.isPlayerAliveAndSurvival(player)) {
-            if (cooldown != null) player.getItemCooldownManager().set(item, cooldown);
-            if (hand != null) player.getStackInHand(hand).decrement(1);
+        if (!GameFunctions.isPlayerAliveAndSurvival(player)) return;
+        if (cooldown != null) player.getItemCooldownManager().set(item, cooldown);
+        if (hand != null) {
+            ItemStack stack = player.getStackInHand(hand);
+            if (stack.isOf(item)) {
+                stack.decrement(1);
+            }
         }
     }
 
