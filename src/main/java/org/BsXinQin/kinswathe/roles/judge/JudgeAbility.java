@@ -26,11 +26,12 @@ public class JudgeAbility {
         AbilityPlayerComponent ability = AbilityPlayerComponent.KEY.get(player);
         PlayerShopComponent playerShop = PlayerShopComponent.KEY.get(player);
         if (gameWorld.isRole(player, KinsWatheRoles.JUDGE) && GameFunctions.isPlayerAliveAndSurvival(player) && ability.cooldown <= 0) {
-            if (playerShop.balance < KinsWatheConfig.HANDLER.instance().JudgeAbilityPrice) return;
+            int price = KinsWatheConfig.HANDLER.instance().JudgeAbilityPrice;
+            if (playerShop.balance < price) return;
+            playerShop.balance -= price;
+            playerShop.sync();
             ServerPlayerEntity target = player.getServer().getPlayerManager().getPlayer(payload.target());
             if (GameFunctions.isPlayerAliveAndSurvival(target)) {
-                playerShop.balance -= KinsWatheConfig.HANDLER.instance().JudgeAbilityPrice;
-                playerShop.sync();
                 target.sendMessage(Text.translatable("tip.kinswathe.judge.notification").withColor(KinsWatheRoles.JUDGE.color()), true);
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, KinsWatheConfig.HANDLER.instance().JudgeAbilityGlowing * 20, 0, false, true, true));
                 var lightning = new LightningEntity(net.minecraft.entity.EntityType.LIGHTNING_BOLT, target.getWorld());
